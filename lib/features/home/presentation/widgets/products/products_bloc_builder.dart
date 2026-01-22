@@ -1,0 +1,63 @@
+import 'package:elevate_flutter_task/core/helpers/spacing.dart';
+import 'package:elevate_flutter_task/core/theming/styles.dart';
+import 'package:elevate_flutter_task/features/home/presentation/cubit/cubit/home_cubit_cubit.dart';
+import 'package:elevate_flutter_task/features/home/presentation/widgets/products/product_list.dart';
+import 'package:elevate_flutter_task/features/home/presentation/widgets/products/products_shimmer_loading.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ProductsBlocBuilder extends StatelessWidget {
+  const ProductsBlocBuilder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubitCubit, HomeCubitState>(
+      buildWhen: (previous, current) =>
+          current is ProductsSuccess ||
+          current is ProductsError ||
+          current is ProductsLoading,
+      builder: (context, state) {
+        return state.maybeWhen(
+          productsLoading: () {
+            return setupLoading();
+          },
+          productsSuccess: (productsList) {
+            return setupSuccess(productsList);
+          },
+          productsError: (errorHandler) => setupError(),
+          orElse: () {
+            return const SizedBox.shrink();
+          },
+        );
+      },
+    );
+  }
+
+  Widget setupLoading() {
+    return Column(
+      children: [verticalSpace(10), const ProductsShimmerLoading()],
+    );
+  }
+
+  Widget setupSuccess(productsList) {
+    if (productsList.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.all(20),
+        child: Center(
+          child: Text(
+            'No products found',
+            style: AppTextStyles.font14DarkBlueBold,
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: ProductList(productList: productsList),
+    );
+  }
+
+  Widget setupError() {
+    return const SizedBox.shrink();
+  }
+}
