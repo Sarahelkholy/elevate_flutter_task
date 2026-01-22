@@ -31,7 +31,7 @@ A Flutter e-commerce app showcasing the **Home Screen** feature with **Cubit** f
 ## Getting Started
 
 ```bash
-git clone <your-repo-url>
+git clone <repo-url>
 cd elevate_flutter_task
 flutter pub get
 flutter run
